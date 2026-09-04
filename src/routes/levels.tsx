@@ -38,9 +38,15 @@ type Level = {
   _id: string
   level: number
   name: string
+  emoji?: string
   minXP: number
+  maxXP?: number
   color: string
   badgeUrl?: string
+  rewardCoins?: number
+  rewardDiamonds?: number
+  rewardStoreItem?: string
+  perks?: string[]
 }
 
 function LevelsPage() {
@@ -72,35 +78,115 @@ function LevelsPage() {
   const columns = useMemo<ColumnDef<Level>[]>(() => [
     {
       accessorKey: "level",
-      header: "رقم المستوى",
+      header: "المستوى والشارة",
       cell: ({ row }) => {
         const lvl = row.original
         return (
-          <div className="flex items-center gap-2 font-bold">
+          <div className="flex items-center gap-3">
             <span 
-              className="flex h-8 w-8 items-center justify-center rounded-full text-white shadow-sm shrink-0"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-white font-black text-sm shadow-md shrink-0 ring-2 ring-white/20"
               style={{ backgroundColor: lvl.color || '#94a3b8' }}
             >
               {lvl.level}
             </span>
-            {lvl.badgeUrl && (
-              <img src={lvl.badgeUrl} alt={lvl.name} className="h-6 w-6 object-contain" />
-            )}
+            <div className="relative flex items-center justify-center h-10 w-10 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 border shadow-sm shrink-0">
+              {lvl.badgeUrl ? (
+                <img 
+                  src={lvl.badgeUrl} 
+                  alt={lvl.name} 
+                  className="h-8 w-8 object-contain drop-shadow-sm" 
+                  onError={(e) => {
+                    // Fallback to local asset if remote proxy is pending
+                    const target = e.currentTarget;
+                    if (!target.dataset['triedLocal']) {
+                      target.dataset['triedLocal'] = "true";
+                      target.src = `/assets/levels/level_${lvl.level}.png`;
+                    }
+                  }}
+                />
+              ) : (
+                <span className="text-xl">{lvl.emoji || '⭐'}</span>
+              )}
+            </div>
           </div>
         )
       },
     },
     {
       accessorKey: "name",
-      header: "اسم الرتبة",
-      cell: ({ row }) => <span className="font-bold">{row.original.name}</span>,
+      header: "اسم الرتبة والامتيازات",
+      cell: ({ row }) => {
+        const lvl = row.original
+        return (
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 font-bold text-sm">
+              <span className="text-base">{lvl.emoji}</span>
+              <span>{lvl.name}</span>
+            </div>
+            {lvl.perks && lvl.perks.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {lvl.perks.slice(0, 2).map((perk, i) => (
+                  <span key={i} className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-muted-foreground border">
+                    {perk}
+                  </span>
+                ))}
+                {lvl.perks.length > 2 && (
+                  <span className="text-[10px] text-muted-foreground self-center">
+                    +{lvl.perks.length - 2} المزيد
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      },
     },
     {
       accessorKey: "minXP",
-      header: "نقاط الخبرة (XP) المطلوبة",
+      header: "نقاط الخبرة (XP)",
       cell: ({ row }) => {
-        const xp = row.original.minXP
-        return <span className="font-mono font-medium">{xp.toLocaleString()} XP</span>
+        const lvl = row.original
+        const maxText = lvl.maxXP && lvl.maxXP < 999999999 ? lvl.maxXP.toLocaleString() : '∞';
+        return (
+          <div className="font-mono text-xs space-y-0.5">
+            <div className="font-semibold text-primary">
+              {lvl.minXP.toLocaleString()} XP
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              إلى {maxText} XP
+            </div>
+          </div>
+        )
+      },
+    },
+    {
+      id: "rewards",
+      header: "مكافآت الترقية",
+      cell: ({ row }) => {
+        const lvl = row.original
+        const hasRewards = (lvl.rewardCoins || 0) > 0 || (lvl.rewardDiamonds || 0) > 0 || !!lvl.rewardStoreItem
+        if (!hasRewards) {
+          return <span className="text-xs text-muted-foreground">-</span>
+        }
+        return (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {lvl.rewardCoins ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                🪙 {lvl.rewardCoins.toLocaleString()}
+              </span>
+            ) : null}
+            {lvl.rewardDiamonds ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/50">
+                💎 {lvl.rewardDiamonds.toLocaleString()}
+              </span>
+            ) : null}
+            {lvl.rewardStoreItem ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50">
+                🎁 {lvl.rewardStoreItem}
+              </span>
+            ) : null}
+          </div>
+        )
       },
     },
     {
@@ -177,8 +263,8 @@ function LevelsPage() {
   return (
     <div className="space-y-6">
       <PageHeader 
-        title="مستويات المستخدمين (Levels)" 
-        description="إعداد مستويات ونقاط الخبرة المطلوبة (XP) لتطور المستخدمين والمذيعين." 
+        title="مستويات المستخدمين (Levels System)" 
+        description="إدارة هيكل الـ 30 مستوى ونقاط الـ XP ومكافآت الترقية (عملات، ألماس، عناصر المتجر)." 
         action={
           <Button onClick={handleOpenDialog}>
             <Plus className="mr-2 size-4" /> إضافة مستوى جديد
@@ -187,39 +273,64 @@ function LevelsPage() {
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editingLevel ? "تعديل المستوى" : "إضافة مستوى جديد"}</DialogTitle>
+            <DialogTitle>{editingLevel ? `تعديل المستوى ${editingLevel.level}` : "إضافة مستوى جديد"}</DialogTitle>
           </DialogHeader>
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 py-3">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-1">
                 <Label htmlFor="level">رقم المستوى</Label>
                 <Input id="level" name="level" type="number" min="1" defaultValue={editingLevel?.level} required placeholder="مثال: 1" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="name">اسم الرتبة</Label>
-                <Input id="name" name="name" defaultValue={editingLevel?.name} required placeholder="مثال: مبتدئ" />
+              <div className="space-y-1">
+                <Label htmlFor="emoji">الرمز التعبيري</Label>
+                <Input id="emoji" name="emoji" defaultValue={editingLevel?.emoji || '⭐'} placeholder="مثال: 🌱" />
               </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="minXP">نقاط الـ XP المطلوبة</Label>
-                <Input id="minXP" name="minXP" type="number" min="0" defaultValue={editingLevel?.minXP} required placeholder="مثال: 500" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="color">لون المستوى (Hex)</Label>
+              <div className="space-y-1">
+                <Label htmlFor="color">لون المستوى</Label>
                 <Input id="color" name="color" type="color" defaultValue={editingLevel?.color || "#94a3b8"} className="h-10 px-1 py-1" />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="badge">أيقونة/شارة الرتبة (اختياري)</Label>
+            <div className="space-y-1">
+              <Label htmlFor="name">اسم الرتبة</Label>
+              <Input id="name" name="name" defaultValue={editingLevel?.name} required placeholder="مثال: Seedling | بذرة" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label htmlFor="minXP">نقاط XP البداية</Label>
+                <Input id="minXP" name="minXP" type="number" min="0" defaultValue={editingLevel?.minXP} required placeholder="مثال: 1000" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="maxXP">نقاط XP النهاية</Label>
+                <Input id="maxXP" name="maxXP" type="number" min="0" defaultValue={editingLevel?.maxXP} placeholder="مثال: 1999" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label htmlFor="rewardCoins">مكافأة العملات 🪙</Label>
+                <Input id="rewardCoins" name="rewardCoins" type="number" min="0" defaultValue={editingLevel?.rewardCoins || 0} placeholder="0" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="rewardDiamonds">مكافأة الألماس 💎</Label>
+                <Input id="rewardDiamonds" name="rewardDiamonds" type="number" min="0" defaultValue={editingLevel?.rewardDiamonds || 0} placeholder="0" />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="rewardStoreItem">عنصر المتجر المجاني عند الفتح 🎁</Label>
+              <Input id="rewardStoreItem" name="rewardStoreItem" defaultValue={editingLevel?.rewardStoreItem || ''} placeholder="مثال: Sakura Blossom Frame" />
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="badge">أيقونة الشارة ثلاثية الأبعاد (3D Badge)</Label>
               <Input id="badge" name="badge" type="file" accept="image/*" />
             </div>
 
-            <DialogFooter className="pt-4">
+            <DialogFooter className="pt-3">
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSubmitting}>
                 إلغاء
               </Button>
@@ -247,3 +358,4 @@ function LevelsPage() {
     </div>
   )
 }
+
