@@ -108,11 +108,11 @@ export function Pill({
   );
 }
 
-export function Avatar({ name, hue, size = 36 }: { name: string; hue: number; size?: number }) {
+export function Avatar({ name, hue, size = 36, className }: { name: string; hue: number; size?: number; className?: string }) {
   const initials = name.split(" ").slice(0, 2).map((w) => w[0]).join("");
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-full text-xs font-bold text-primary-foreground"
+      className={cn("grid shrink-0 place-items-center rounded-full text-xs font-bold text-primary-foreground", className)}
       style={{
         width: size,
         height: size,

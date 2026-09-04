@@ -175,7 +175,7 @@ function ModerationPage() {
                   </DropdownMenuItem>
                   {report.reportedUser && (
                     <DropdownMenuItem className="text-destructive" onClick={() => {
-                      if (window.confirm("هل أنت متأكد من حظر هذا المستخدم؟")) {
+                      if (report.reportedUser && window.confirm("هل أنت متأكد من حظر هذا المستخدم؟")) {
                         banUserMutation.mutate(report.reportedUser._id)
                         updateStatusMutation.mutate({ id: report._id, status: 'reviewed', actionTaken: 'تم حظر المستخدم' })
                       }
