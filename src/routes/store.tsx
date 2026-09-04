@@ -157,10 +157,15 @@ function StorePage() {
             src={row.original.animationUrl || row.original.imageUrl} 
             alt={row.original.name} 
             className="h-full w-full object-contain" 
+            onError={(e) => {
+              if (row.original.animationUrl && e.currentTarget.src !== row.original.imageUrl) {
+                e.currentTarget.src = row.original.imageUrl;
+              }
+            }}
           />
           {row.original.animationUrl && (
             <span className="absolute bottom-0 right-0 bg-purple-600 text-[8px] text-white font-bold px-1 rounded-tl leading-tight">
-              GIF
+              ANIM
             </span>
           )}
         </div>
