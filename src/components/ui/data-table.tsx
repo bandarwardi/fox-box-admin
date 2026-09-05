@@ -81,7 +81,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {(searchKey || onSearchChange) && (
-        <div className="relative max-w-sm">
+        <div className="relative w-full sm:max-w-sm">
           <Search className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder={searchPlaceholder}
@@ -98,7 +98,7 @@ export function DataTable<TData, TValue>({
         </div>
       )}
       
-      <div className="rounded-xl border bg-card text-card-foreground shadow">
+      <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground shadow">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -143,8 +143,8 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
+        <div className="text-muted-foreground order-2 sm:order-1 text-center sm:text-start">
           عرض {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + (totalRows > 0 ? 1 : 0)} إلى{" "}
           {Math.min(
             (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
@@ -152,7 +152,7 @@ export function DataTable<TData, TValue>({
           )}{" "}
           من أصل {totalRows}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 order-1 sm:order-2">
           <Button
             variant="outline"
             size="sm"

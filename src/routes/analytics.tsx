@@ -44,7 +44,7 @@ function AnalyticsPage() {
         description="نظرة عامة على أداء المنصة، نمو المستخدمين، الإيرادات المالية." 
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border bg-card p-6 shadow-sm">
           <div className="flex flex-row items-center justify-between pb-2">
             <h3 className="font-semibold text-sm font-medium">إجمالي الإيرادات</h3>
@@ -79,10 +79,10 @@ function AnalyticsPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+        <div className="rounded-xl border bg-card p-6 shadow-sm min-w-0 overflow-hidden">
           <h3 className="font-semibold mb-4 text-lg">نظرة عامة على الإيرادات</h3>
-          <div className="h-[300px] w-full" dir="ltr">
+          <div className="h-[300px] w-full min-w-0 overflow-hidden" dir="ltr">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={revenueData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
@@ -104,9 +104,9 @@ function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
+        <div className="rounded-xl border bg-card p-6 shadow-sm min-w-0 overflow-hidden">
           <h3 className="font-semibold mb-4 text-lg">نمو المستخدمين (أسبوعياً)</h3>
-          <div className="h-[300px] w-full" dir="ltr">
+          <div className="h-[300px] w-full min-w-0 overflow-hidden" dir="ltr">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={usersData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />

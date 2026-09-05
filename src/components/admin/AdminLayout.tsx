@@ -64,7 +64,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     "لوحة التحكم";
 
   return (
-    <div dir="rtl" className="min-h-screen bg-background">
+    <div dir="rtl" className="min-h-screen w-full bg-background overflow-x-hidden">
       {/* القائمة الجانبية (يمين) */}
       <aside className="fixed inset-y-0 right-0 z-40 hidden w-64 flex-col border-l border-sidebar-border bg-sidebar py-5 lg:flex">
         <div className="mb-6">
@@ -80,10 +80,14 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             className="absolute inset-0 bg-foreground/40"
             onClick={() => setOpen(false)}
           />
-          <aside className="absolute inset-y-0 right-0 flex w-72 flex-col bg-sidebar py-5">
-            <div className="mb-6 flex items-center justify-between pl-3">
+          <aside className="absolute inset-y-0 right-0 flex w-72 flex-col bg-sidebar py-5 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between px-3">
               <Logo />
-              <button onClick={() => setOpen(false)} aria-label="إغلاق">
+              <button 
+                onClick={() => setOpen(false)} 
+                aria-label="إغلاق" 
+                className="grid size-9 place-items-center rounded-lg hover:bg-secondary"
+              >
                 <X className="size-5" />
               </button>
             </div>
@@ -92,15 +96,20 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <div className="lg:mr-64">
+      <div className="lg:mr-64 min-w-0 max-w-full flex flex-col min-h-screen overflow-x-hidden">
         {/* الشريط العلوي */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-card/90 px-4 backdrop-blur md:px-6">
-          <button className="lg:hidden" onClick={() => setOpen(true)} aria-label="القائمة">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-2 sm:gap-3 border-b border-border bg-card/90 px-3 sm:px-4 backdrop-blur md:px-6">
+          <button 
+            className="lg:hidden grid size-10 place-items-center rounded-xl hover:bg-secondary shrink-0" 
+            onClick={() => setOpen(true)} 
+            aria-label="القائمة"
+          >
             <Menu className="size-6" />
           </button>
-          <h1 className="text-lg font-extrabold tracking-tight">{current}</h1>
+          <h1 className="text-base sm:text-lg font-extrabold tracking-tight truncate max-w-[140px] sm:max-w-xs">{current}</h1>
 
-          <div className="relative mr-auto hidden w-72 md:block">
+          {/* Quick Search on larger screens */}
+          <div className="relative ms-auto hidden w-48 md:w-64 lg:w-72 md:block">
             <Search className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="search"
@@ -109,41 +118,44 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             />
           </div>
 
-          <button
-            className="relative grid size-10 place-items-center rounded-xl text-muted-foreground transition hover:bg-secondary md:mr-2"
-            aria-label="الإشعارات"
-          >
-            <Bell className="size-5" />
-            <span className="absolute right-1.5 top-1.5 grid size-4 place-items-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
-              7
-            </span>
-          </button>
+          {/* User actions / notifications */}
+          <div className="ms-auto md:ms-0 flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <button
+              className="relative grid size-10 place-items-center rounded-xl text-muted-foreground transition hover:bg-secondary"
+              aria-label="الإشعارات"
+            >
+              <Bell className="size-5" />
+              <span className="absolute right-1.5 top-1.5 grid size-4 place-items-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
+                7
+              </span>
+            </button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 rounded-xl px-2 py-1.5 transition hover:bg-secondary">
-              <span className="brand-gradient grid size-9 place-items-center rounded-full text-sm font-bold text-primary-foreground">
-                ب م
-              </span>
-              <span className="hidden text-right leading-tight sm:block">
-                <span className="block text-sm font-bold">بندر محمد</span>
-                <span className="block text-[11px] text-muted-foreground">مدير عام</span>
-              </span>
-              <ChevronDown className="size-4 text-muted-foreground" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuLabel>حسابي</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <UserIcon className="size-4" /> الملف الشخصي
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <LogOut className="size-4" /> تسجيل الخروج
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-2 rounded-xl px-2 py-1.5 transition hover:bg-secondary">
+                <span className="brand-gradient grid size-9 place-items-center rounded-full text-sm font-bold text-primary-foreground shrink-0">
+                  ب م
+                </span>
+                <span className="hidden text-right leading-tight sm:block">
+                  <span className="block text-sm font-bold truncate max-w-[100px]">بندر محمد</span>
+                  <span className="block text-[11px] text-muted-foreground">مدير عام</span>
+                </span>
+                <ChevronDown className="size-4 text-muted-foreground" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <UserIcon className="size-4" /> الملف الشخصي
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">
+                  <LogOut className="size-4" /> تسجيل الخروج
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </header>
 
-        <main className="p-4 md:p-6">{children}</main>
+        <main className="flex-1 p-3 sm:p-4 md:p-6 min-w-0 max-w-full overflow-x-hidden">{children}</main>
       </div>
     </div>
   );

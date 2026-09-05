@@ -147,10 +147,10 @@ function SettingsPage() {
       />
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="mb-6 grid w-full grid-cols-3 md:w-[400px]">
-          <TabsTrigger value="general">عام</TabsTrigger>
-          <TabsTrigger value="finance">المالية والعملات</TabsTrigger>
-          <TabsTrigger value="legal">الشروط والأحكام</TabsTrigger>
+        <TabsList className="mb-6 flex w-full flex-wrap sm:inline-flex sm:w-auto h-auto p-1 gap-1 bg-muted/60">
+          <TabsTrigger value="general" className="flex-1 sm:flex-initial">عام</TabsTrigger>
+          <TabsTrigger value="finance" className="flex-1 sm:flex-initial">المالية والعملات</TabsTrigger>
+          <TabsTrigger value="legal" className="flex-1 sm:flex-initial">الشروط والأحكام</TabsTrigger>
         </TabsList>
         
         <TabsContent value="general" className="space-y-4">
@@ -189,7 +189,7 @@ function SettingsPage() {
             </div>
 
             <Button 
-              className="mt-8" 
+              className="mt-8 w-full sm:w-auto" 
               onClick={() => saveMutation.mutate(['app_name', 'support_email', 'maintenance_mode'])}
               disabled={saveMutation.isPending}
             >
@@ -238,17 +238,17 @@ function SettingsPage() {
           </div>
 
           <div className="rounded-xl border bg-card p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <Sparkles className="size-5 text-fuchsia-500" />
+                  <Sparkles className="size-5 text-fuchsia-500 shrink-0" />
                   باقات شحن العملات في التطبيق (Coin Packages)
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
                   تحديد أسعار الباقات، عدد العملات، وتحديد خيارات (الأفضل قيمة Best Value أو Popular) لتظهر مباشرة في محفظة المستخدم.
                 </p>
               </div>
-              <Button variant="outline" size="sm" onClick={handleAddPackage} className="gap-1.5">
+              <Button variant="outline" size="sm" onClick={handleAddPackage} className="gap-1.5 shrink-0 self-start sm:self-auto">
                 <Plus className="size-4" />
                 إضافة باقة جديدة
               </Button>
@@ -258,9 +258,9 @@ function SettingsPage() {
               {(formData['coin_packages'] || []).map((pkg: CoinPackage, index: number) => (
                 <div 
                   key={pkg.id || index}
-                  className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-lg border bg-muted/30"
+                  className="flex flex-col lg:flex-row items-start lg:items-center gap-4 p-4 rounded-lg border bg-muted/30"
                 >
-                  <div className="w-full md:w-36 space-y-1">
+                  <div className="w-full sm:w-36 space-y-1">
                     <Label className="text-xs">عدد العملات</Label>
                     <Input 
                       value={pkg.coins} 
@@ -268,7 +268,7 @@ function SettingsPage() {
                       onChange={(e) => handlePackageChange(index, 'coins', e.target.value)} 
                     />
                   </div>
-                  <div className="w-full md:w-32 space-y-1">
+                  <div className="w-full sm:w-32 space-y-1">
                     <Label className="text-xs">السعر مع العملة</Label>
                     <Input 
                       value={pkg.price} 
@@ -276,7 +276,7 @@ function SettingsPage() {
                       onChange={(e) => handlePackageChange(index, 'price', e.target.value)} 
                     />
                   </div>
-                  <div className="w-full md:w-44 space-y-1">
+                  <div className="w-full sm:w-44 space-y-1">
                     <Label className="text-xs">شارة التميز (Badge)</Label>
                     <Input 
                       value={pkg.badge || ''} 
@@ -284,7 +284,7 @@ function SettingsPage() {
                       onChange={(e) => handlePackageChange(index, 'badge', e.target.value || null)} 
                     />
                   </div>
-                  <div className="flex items-center gap-2 pt-2 md:pt-6">
+                  <div className="flex items-center gap-2 pt-2 lg:pt-6">
                     <Switch 
                       id={`pop-${index}`}
                       checked={!!pkg.popular}
@@ -294,7 +294,7 @@ function SettingsPage() {
                       تمييز كباقة رئيسية (Highlight)
                     </Label>
                   </div>
-                  <div className="md:ms-auto pt-2 md:pt-6">
+                  <div className="lg:ms-auto pt-2 lg:pt-6 self-end lg:self-auto">
                     <Button 
                       variant="ghost" 
                       size="icon" 
@@ -309,7 +309,7 @@ function SettingsPage() {
             </div>
 
             <Button 
-              className="mt-6" 
+              className="mt-6 w-full sm:w-auto" 
               onClick={() => saveMutation.mutate(['app_fee_percentage', 'coin_exchange_rate', 'diamond_exchange_rate', 'coin_packages'])}
               disabled={saveMutation.isPending}
             >
@@ -342,7 +342,7 @@ function SettingsPage() {
             </div>
 
             <Button 
-              className="mt-8"
+              className="mt-8 w-full sm:w-auto"
               onClick={() => saveMutation.mutate(['terms_of_use', 'privacy_policy'])}
               disabled={saveMutation.isPending}
             >

@@ -430,7 +430,7 @@ function StorePage() {
         title="متجر المنصة" 
         description="إدارة عناصر المتجر مثل إطارات الصور ومؤثرات الدخول التي يمكن للمستخدمين شراؤها." 
         action={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button 
               variant="outline" 
               className="border-amber-500/30 hover:bg-amber-500/10 text-amber-600 dark:text-amber-400"
@@ -531,7 +531,7 @@ function StorePage() {
 
             {/* List preview */}
             <ScrollArea className="h-64 rounded-md border p-3">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                 {DEFAULT_STORE_PRESETS.map((p) => {
                   const isAlreadyAdded = existingNamesSet.has(p.name.toLowerCase().trim());
                   return (
@@ -616,7 +616,7 @@ function StorePage() {
               <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">اختيار سريع من قوالب المتجر الجاهزة:</Label>
                 <ScrollArea className="h-32 rounded-lg border p-2 bg-muted/20">
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {DEFAULT_STORE_PRESETS.map((preset) => {
                       const isSelected = selectedPreset?.id === preset.id;
                       return (
@@ -667,7 +667,7 @@ function StorePage() {
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="price">السعر (عملة المنصة Coins)</Label>
                 <Input 

@@ -197,7 +197,7 @@ export function LiveStreamPlayerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl sm:max-w-2xl bg-zinc-950 border-zinc-800 text-zinc-100 p-0 overflow-hidden shadow-2xl">
+      <DialogContent className="w-[calc(100%-2rem)] max-w-xl sm:max-w-2xl bg-zinc-950 border-zinc-800 text-zinc-100 p-0 overflow-hidden shadow-2xl">
         {/* Header Bar */}
         <DialogHeader className="p-4 border-b border-zinc-800/80 bg-zinc-900/50 flex flex-row items-center justify-between space-y-0">
           <div className="flex items-center gap-3">

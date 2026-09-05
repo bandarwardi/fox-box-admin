@@ -98,7 +98,7 @@ function Dashboard() {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="إجمالي المستخدمين" value={isLoading ? "..." : fmt(data?.totalUsers || 0)} icon={Users} />
         <StatCard label="البثوث المباشرة الحالية" value={isLoading ? "..." : fmt(data?.activeStreams || 0)} icon={Radio} />
         <StatCard
@@ -133,7 +133,7 @@ function Dashboard() {
             </div>
           }
         >
-          <div className="h-[320px] w-full" dir="ltr">
+          <div className="h-[320px] w-full min-w-0 overflow-hidden" dir="ltr">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={series} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
                 <CartesianGrid stroke="var(--color-border)" vertical={false} />
@@ -172,7 +172,7 @@ function Dashboard() {
         </Panel>
 
         <Panel title="نظرة عامة على الهدايا" subtitle="توزيع أنواع الهدايا الافتراضية">
-          <div className="h-[240px] w-full" dir="ltr">
+          <div className="h-[240px] w-full min-w-0 overflow-hidden" dir="ltr">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie

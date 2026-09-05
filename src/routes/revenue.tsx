@@ -131,7 +131,7 @@ const columns: ColumnDef<Withdrawal>[] = [
 function RevenuePage() {
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-xl border bg-card p-6 shadow-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
             <DollarSign className="size-5" />

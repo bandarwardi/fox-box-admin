@@ -249,7 +249,7 @@ function VoiceRoomsPage() {
       />
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {[
           { id: 'all', label: 'الكل' },
           { id: 'live', label: 'النشطة الآن 🔴' },
@@ -268,7 +268,7 @@ function VoiceRoomsPage() {
       </div>
 
       {/* Data Table */}
-      <div className="rounded-2xl border bg-card p-4 shadow-sm">
+      <div className="rounded-2xl border bg-card p-3 sm:p-4 shadow-sm overflow-hidden min-w-0">
         {isLoading && rooms.length === 0 ? (
           <div className="flex h-32 items-center justify-center">
             <p className="text-muted-foreground">جاري تحميل البيانات...</p>

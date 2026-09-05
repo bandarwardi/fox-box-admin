@@ -19,17 +19,17 @@ export function Panel({
   padded?: boolean;
 }) {
   return (
-    <section className={cn("card-surface", className)}>
+    <section className={cn("card-surface min-w-0 overflow-hidden", className)}>
       {(title || actions) && (
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-5">
-          <div>
-            {title && <h2 className="text-base font-extrabold tracking-tight">{title}</h2>}
+          <div className="min-w-0">
+            {title && <h2 className="text-base font-extrabold tracking-tight truncate">{title}</h2>}
             {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
           </div>
-          {actions}
+          <div className="flex items-center gap-2 shrink-0">{actions}</div>
         </div>
       )}
-      <div className={cn(padded ? "p-5" : "pb-2")}>{children}</div>
+      <div className={cn(padded ? "p-5" : "pb-2", "min-w-0 overflow-hidden")}>{children}</div>
     </section>
   );
 }
@@ -141,14 +141,14 @@ export function DataTable({
   children: ReactNode;
 }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-right text-sm">
+    <div className="w-full overflow-x-auto">
+      <table className="w-full min-w-[500px] text-right text-sm">
         <thead>
           <tr className="border-b border-border">
             {head.map((h) => (
               <th
                 key={h}
-                className="whitespace-nowrap px-4 py-3 text-xs font-bold text-muted-foreground"
+                className="whitespace-nowrap px-4 py-3 text-xs font-bold text-muted-foreground text-start"
               >
                 {h}
               </th>
