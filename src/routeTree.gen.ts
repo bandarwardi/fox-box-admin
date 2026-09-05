@@ -22,6 +22,7 @@ import { Route as StoreRouteImport } from './routes/store'
 import { Route as StreamsRouteImport } from './routes/streams'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as UsersRouteImport } from './routes/users'
+import { Route as VoiceRoomsRouteImport } from './routes/voice-rooms'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -88,6 +89,11 @@ const UsersRoute = UsersRouteImport.update({
   path: '/users',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VoiceRoomsRoute = VoiceRoomsRouteImport.update({
+  id: '/voice-rooms',
+  path: '/voice-rooms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/streams': typeof StreamsRoute
   '/support': typeof SupportRoute
   '/users': typeof UsersRoute
+  '/voice-rooms': typeof VoiceRoomsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/streams': typeof StreamsRoute
   '/support': typeof SupportRoute
   '/users': typeof UsersRoute
+  '/voice-rooms': typeof VoiceRoomsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/streams': typeof StreamsRoute
   '/support': typeof SupportRoute
   '/users': typeof UsersRoute
+  '/voice-rooms': typeof VoiceRoomsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/streams'
     | '/support'
     | '/users'
+    | '/voice-rooms'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/streams'
     | '/support'
     | '/users'
+    | '/voice-rooms'
   id:
     | '__root__'
     | '/'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/streams'
     | '/support'
     | '/users'
+    | '/voice-rooms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -197,6 +209,7 @@ export interface RootRouteChildren {
   StreamsRoute: typeof StreamsRoute
   SupportRoute: typeof SupportRoute
   UsersRoute: typeof UsersRoute
+  VoiceRoomsRoute: typeof VoiceRoomsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -292,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/voice-rooms': {
+      id: '/voice-rooms'
+      path: '/voice-rooms'
+      fullPath: '/voice-rooms'
+      preLoaderRoute: typeof VoiceRoomsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -309,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   StreamsRoute: StreamsRoute,
   SupportRoute: SupportRoute,
   UsersRoute: UsersRoute,
+  VoiceRoomsRoute: VoiceRoomsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
