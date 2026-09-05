@@ -27,10 +27,11 @@ import {
 } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/support")({
   head: () => ({
-    meta: [{ title: "تذاكر الدعم الفني | ستريم برو" }],
+    meta: [{ title: `تذاكر الدعم الفني | ${BRAND.shortArabicName}` }],
   }),
   component: SupportPage,
 })

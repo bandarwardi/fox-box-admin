@@ -28,10 +28,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/economy")({
   head: () => ({
-    meta: [{ title: "الاقتصاد والعملات | ستريم برو" }],
+    meta: [{ title: `الاقتصاد والعملات | ${BRAND.shortArabicName}` }],
   }),
   component: EconomyPage,
 })

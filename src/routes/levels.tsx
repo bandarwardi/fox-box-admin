@@ -26,10 +26,11 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/levels")({
   head: () => ({
-    meta: [{ title: "مستويات المستخدمين | ستريم برو" }],
+    meta: [{ title: `مستويات المستخدمين | ${BRAND.shortArabicName}` }],
   }),
   component: LevelsPage,
 })

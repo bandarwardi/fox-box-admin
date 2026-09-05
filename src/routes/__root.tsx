@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Toaster } from "@/components/ui/sonner";
+import { BRAND } from "@/config/brand";
 
 function NotFoundComponent() {
   return (
@@ -80,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ستريم برو — لوحة تحكم إدارة البث المباشر" },
+      { title: `${BRAND.shortArabicName} — لوحة تحكم إدارة البث المباشر` },
       {
         name: "description",
         content:

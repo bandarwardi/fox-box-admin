@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Save, Loader2 } from "lucide-react"
+import { Save, Loader2, Plus, Trash2, Sparkles, Gem, Coins } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api"
@@ -12,10 +12,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
-    meta: [{ title: "إعدادات التطبيق | ستريم برو" }],
+    meta: [{ title: `إعدادات التطبيق | ${BRAND.shortArabicName}` }],
   }),
   component: SettingsPage,
 })
@@ -25,14 +26,33 @@ type Setting = {
   value: any
 }
 
+type CoinPackage = {
+  id: string
+  coins: string
+  price: string
+  popular?: boolean
+  badge?: string | null
+}
+
+const DEFAULT_PACKAGES: CoinPackage[] = [
+  { id: 'pkg_1', coins: '100', price: '$1.99', popular: false, badge: null },
+  { id: 'pkg_2', coins: '500', price: '$7.99', popular: true, badge: 'Best Value' },
+  { id: 'pkg_3', coins: '1,200', price: '$14.99', popular: false, badge: 'Popular' },
+  { id: 'pkg_4', coins: '2,500', price: '$28.99', popular: false, badge: 'VIP Choice' },
+  { id: 'pkg_5', coins: '5,000', price: '$54.99', popular: false, badge: 'Mega Saver' },
+  { id: 'pkg_6', coins: '10,000', price: '$99.99', popular: false, badge: 'Ultimate VIP' },
+]
+
 function SettingsPage() {
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState<Record<string, any>>({
-    app_name: "ستريم برو",
-    support_email: "support@example.com",
+    app_name: BRAND.arabicName,
+    support_email: BRAND.supportEmail,
     maintenance_mode: false,
     app_fee_percentage: 30,
     coin_exchange_rate: 100,
+    diamond_exchange_rate: 10,
+    coin_packages: DEFAULT_PACKAGES,
     terms_of_use: "يجب على جميع المستخدمين الالتزام...",
     privacy_policy: "نحن نحترم خصوصيتك...",
   });
@@ -51,12 +71,42 @@ function SettingsPage() {
       settings.forEach(s => {
         newForm[s.key] = s.value;
       });
+      // Ensure coin_packages is an array if returned from backend
+      if (!Array.isArray(newForm['coin_packages'])) {
+        newForm['coin_packages'] = DEFAULT_PACKAGES;
+      }
       setFormData(newForm);
     }
   }, [settings]);
 
   const handleChange = (key: string, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handlePackageChange = (index: number, field: keyof CoinPackage, value: any) => {
+    const pkgs = [...(formData['coin_packages'] || [])];
+    if (pkgs[index]) {
+      pkgs[index] = { ...pkgs[index], [field]: value };
+      setFormData(prev => ({ ...prev, coin_packages: pkgs }));
+    }
+  };
+
+  const handleAddPackage = () => {
+    const pkgs = [...(formData['coin_packages'] || [])];
+    pkgs.push({
+      id: `pkg_${Date.now()}`,
+      coins: '1000',
+      price: '$9.99',
+      popular: false,
+      badge: null,
+    });
+    setFormData(prev => ({ ...prev, coin_packages: pkgs }));
+  };
+
+  const handleRemovePackage = (index: number) => {
+    const pkgs = [...(formData['coin_packages'] || [])];
+    pkgs.splice(index, 1);
+    setFormData(prev => ({ ...prev, coin_packages: pkgs }));
   };
 
   const saveMutation = useMutation({
@@ -99,7 +149,7 @@ function SettingsPage() {
       <Tabs defaultValue="general" className="w-full">
         <TabsList className="mb-6 grid w-full grid-cols-3 md:w-[400px]">
           <TabsTrigger value="general">عام</TabsTrigger>
-          <TabsTrigger value="finance">المالية</TabsTrigger>
+          <TabsTrigger value="finance">المالية والعملات</TabsTrigger>
           <TabsTrigger value="legal">الشروط والأحكام</TabsTrigger>
         </TabsList>
         
@@ -149,10 +199,13 @@ function SettingsPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="finance" className="space-y-4">
+        <TabsContent value="finance" className="space-y-6">
           <div className="rounded-xl border bg-card p-6 shadow-sm">
-            <h3 className="font-semibold text-lg mb-4">إعدادات الأرباح والعمولات</h3>
-            <div className="grid gap-6 md:grid-cols-2">
+            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+              <Coins className="size-5 text-amber-500" />
+              إعدادات الأرباح وسعر الصرف
+            </h3>
+            <div className="grid gap-6 md:grid-cols-3">
               <div className="space-y-2">
                 <Label>نسبة التطبيق من الهدايا (%)</Label>
                 <Input 
@@ -169,15 +222,99 @@ function SettingsPage() {
                   onChange={(e) => handleChange('coin_exchange_rate', Number(e.target.value))} 
                 />
               </div>
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5">
+                  <Gem className="size-4 text-cyan-500" />
+                  معدل تحويل الجواهر (عملة لكل 1 ماسة)
+                </Label>
+                <Input 
+                  type="number" 
+                  value={formData['diamond_exchange_rate']} 
+                  onChange={(e) => handleChange('diamond_exchange_rate', Number(e.target.value))} 
+                />
+                <p className="text-xs text-muted-foreground">كم عملة يربح المستخدم عند تحويل 1 ماسة في المحفظة</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border bg-card p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Sparkles className="size-5 text-fuchsia-500" />
+                  باقات شحن العملات في التطبيق (Coin Packages)
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  تحديد أسعار الباقات، عدد العملات، وتحديد خيارات (الأفضل قيمة Best Value أو Popular) لتظهر مباشرة في محفظة المستخدم.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleAddPackage} className="gap-1.5">
+                <Plus className="size-4" />
+                إضافة باقة جديدة
+              </Button>
+            </div>
+
+            <div className="space-y-3">
+              {(formData['coin_packages'] || []).map((pkg: CoinPackage, index: number) => (
+                <div 
+                  key={pkg.id || index}
+                  className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-lg border bg-muted/30"
+                >
+                  <div className="w-full md:w-36 space-y-1">
+                    <Label className="text-xs">عدد العملات</Label>
+                    <Input 
+                      value={pkg.coins} 
+                      placeholder="مثال: 500"
+                      onChange={(e) => handlePackageChange(index, 'coins', e.target.value)} 
+                    />
+                  </div>
+                  <div className="w-full md:w-32 space-y-1">
+                    <Label className="text-xs">السعر مع العملة</Label>
+                    <Input 
+                      value={pkg.price} 
+                      placeholder="مثال: $7.99"
+                      onChange={(e) => handlePackageChange(index, 'price', e.target.value)} 
+                    />
+                  </div>
+                  <div className="w-full md:w-44 space-y-1">
+                    <Label className="text-xs">شارة التميز (Badge)</Label>
+                    <Input 
+                      value={pkg.badge || ''} 
+                      placeholder="مثال: Best Value"
+                      onChange={(e) => handlePackageChange(index, 'badge', e.target.value || null)} 
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 pt-2 md:pt-6">
+                    <Switch 
+                      id={`pop-${index}`}
+                      checked={!!pkg.popular}
+                      onCheckedChange={(val) => handlePackageChange(index, 'popular', val)}
+                    />
+                    <Label htmlFor={`pop-${index}`} className="text-xs font-normal cursor-pointer">
+                      تمييز كباقة رئيسية (Highlight)
+                    </Label>
+                  </div>
+                  <div className="md:ms-auto pt-2 md:pt-6">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => handleRemovePackage(index)}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <Button 
-              className="mt-8"
-              onClick={() => saveMutation.mutate(['app_fee_percentage', 'coin_exchange_rate'])}
+              className="mt-6" 
+              onClick={() => saveMutation.mutate(['app_fee_percentage', 'coin_exchange_rate', 'diamond_exchange_rate', 'coin_packages'])}
               disabled={saveMutation.isPending}
             >
               {saveMutation.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
-              حفظ التغييرات
+              حفظ إعدادات المالية والباقات
             </Button>
           </div>
         </TabsContent>

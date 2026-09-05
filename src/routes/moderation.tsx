@@ -25,10 +25,11 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/moderation")({
   head: () => ({
-    meta: [{ title: "الرقابة والبلاغات | ستريم برو" }],
+    meta: [{ title: `الرقابة والبلاغات | ${BRAND.shortArabicName}` }],
   }),
   component: ModerationPage,
 })

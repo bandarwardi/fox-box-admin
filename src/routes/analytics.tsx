@@ -6,6 +6,7 @@ import {
 } from "recharts"
 
 import { PageHeader } from "@/components/admin/page-header"
+import { BRAND } from "@/config/brand"
 
 // Mock Data
 const revenueData = [
@@ -30,7 +31,7 @@ const usersData = [
 
 export const Route = createFileRoute("/analytics")({
   head: () => ({
-    meta: [{ title: "الإحصائيات والتحليلات | ستريم برو" }],
+    meta: [{ title: `الإحصائيات والتحليلات | ${BRAND.shortArabicName}` }],
   }),
   component: AnalyticsPage,
 })

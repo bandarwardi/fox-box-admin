@@ -31,10 +31,11 @@ import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { DEFAULT_GIFT_PRESETS, GiftPreset } from "@/lib/gift-presets"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/gifts")({
   head: () => ({
-    meta: [{ title: "إدارة الهدايا | ستريم برو" }],
+    meta: [{ title: `إدارة الهدايا | ${BRAND.shortArabicName}` }],
   }),
   component: GiftsPage,
 })

@@ -19,10 +19,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar } from "@/components/admin/ui-kit"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/users")({
   head: () => ({
-    meta: [{ title: "إدارة المستخدمين | ستريم برو" }],
+    meta: [{ title: `إدارة المستخدمين | ${BRAND.shortArabicName}` }],
   }),
   component: UsersPage,
 })

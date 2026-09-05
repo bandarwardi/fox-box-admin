@@ -20,10 +20,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar } from "@/components/admin/ui-kit"
 import { LiveStreamPlayerDialog } from "@/components/admin/live-stream-player-dialog"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/streams")({
   head: () => ({
-    meta: [{ title: "إدارة البثوث | ستريم برو" }],
+    meta: [{ title: `إدارة البثوث | ${BRAND.shortArabicName}` }],
   }),
   component: StreamsPage,
 })

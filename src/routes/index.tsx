@@ -25,17 +25,18 @@ import {
 import { cn, fmt } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { BRAND } from "@/config/brand";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "الرئيسية | ستريم برو — لوحة تحكم البث المباشر" },
+      { title: `الرئيسية | ${BRAND.shortArabicName} — لوحة تحكم البث المباشر` },
       {
         name: "description",
         content:
           "نظرة عامة على أداء منصة البث: المستخدمون، البثوث المباشرة، الإيرادات والهدايا الافتراضية.",
       },
-      { property: "og:title", content: "الرئيسية | ستريم برو" },
+      { property: "og:title", content: `الرئيسية | ${BRAND.shortArabicName}` },
       {
         property: "og:description",
         content: "مؤشرات الأداء اللحظية لمنصة البث المباشر في لوحة واحدة.",

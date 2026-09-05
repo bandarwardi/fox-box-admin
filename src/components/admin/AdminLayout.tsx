@@ -12,15 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { BRAND } from "@/config/brand";
 
 function Logo() {
   return (
     <Link to="/" className="flex items-center gap-3 px-2">
       <span className="brand-gradient grid size-10 place-items-center rounded-xl text-lg font-extrabold text-primary-foreground shadow-pop">
-        S
+        {BRAND.initial}
       </span>
       <span className="flex flex-col leading-tight">
-        <span className="text-base font-extrabold tracking-tight">ستريم برو</span>
+        <span className="text-base font-extrabold tracking-tight">{BRAND.shortArabicName}</span>
         <span className="text-[11px] font-medium text-muted-foreground">لوحة الإدارة</span>
       </span>
     </Link>

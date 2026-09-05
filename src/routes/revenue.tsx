@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar } from "@/components/admin/ui-kit"
+import { BRAND } from "@/config/brand"
 
 // Mock Data
 type Withdrawal = {
@@ -33,7 +34,7 @@ const mockWithdrawals: Withdrawal[] = [
 
 export const Route = createFileRoute("/revenue")({
   head: () => ({
-    meta: [{ title: "الأرباح والسحوبات | ستريم برو" }],
+    meta: [{ title: `الأرباح والسحوبات | ${BRAND.shortArabicName}` }],
   }),
   component: RevenuePage,
 })

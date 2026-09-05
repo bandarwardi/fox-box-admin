@@ -53,10 +53,11 @@ import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { DEFAULT_STORE_PRESETS, StorePreset } from "@/lib/store-presets"
+import { BRAND } from "@/config/brand"
 
 export const Route = createFileRoute("/store")({
   head: () => ({
-    meta: [{ title: "متجر المنصة | ستريم برو" }],
+    meta: [{ title: `متجر المنصة | ${BRAND.shortArabicName}` }],
   }),
   component: StorePage,
 })
