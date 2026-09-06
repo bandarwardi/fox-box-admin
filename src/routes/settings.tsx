@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Save, Loader2, Plus, Trash2, Sparkles, Gem, Coins } from "lucide-react"
+import { Save, Loader2, Plus, Trash2, Sparkles, Gem, Coins, Swords, Flame, Trophy, Timer } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api"
@@ -34,6 +34,14 @@ type CoinPackage = {
   badge?: string | null
 }
 
+type StreakReward = {
+  streak: number
+  diamonds: number
+  xp: number
+  badge?: string | null
+  label: string
+}
+
 const DEFAULT_PACKAGES: CoinPackage[] = [
   { id: 'pkg_1', coins: '100', price: '$1.99', popular: false, badge: null },
   { id: 'pkg_2', coins: '500', price: '$7.99', popular: true, badge: 'Best Value' },
@@ -41,6 +49,12 @@ const DEFAULT_PACKAGES: CoinPackage[] = [
   { id: 'pkg_4', coins: '2,500', price: '$28.99', popular: false, badge: 'VIP Choice' },
   { id: 'pkg_5', coins: '5,000', price: '$54.99', popular: false, badge: 'Mega Saver' },
   { id: 'pkg_6', coins: '10,000', price: '$99.99', popular: false, badge: 'Ultimate VIP' },
+]
+
+const DEFAULT_STREAK_REWARDS: StreakReward[] = [
+  { streak: 3, diamonds: 50, xp: 100, badge: null, label: 'Hat-trick 🎩' },
+  { streak: 5, diamonds: 150, xp: 250, badge: null, label: 'On Fire 🔥' },
+  { streak: 10, diamonds: 500, xp: 500, badge: 'pk_legend', label: 'PK Legend 👑' },
 ]
 
 function SettingsPage() {
@@ -53,6 +67,10 @@ function SettingsPage() {
     coin_exchange_rate: 100,
     diamond_exchange_rate: 10,
     coin_packages: DEFAULT_PACKAGES,
+    pk_victory_bonus_percent: 20,
+    pk_mvp_xp_bonus: 50,
+    pk_duration_seconds: 600,
+    pk_streak_rewards: DEFAULT_STREAK_REWARDS,
     terms_of_use: "يجب على جميع المستخدمين الالتزام...",
     privacy_policy: "نحن نحترم خصوصيتك...",
   });
@@ -74,6 +92,10 @@ function SettingsPage() {
       // Ensure coin_packages is an array if returned from backend
       if (!Array.isArray(newForm['coin_packages'])) {
         newForm['coin_packages'] = DEFAULT_PACKAGES;
+      }
+      // Ensure pk_streak_rewards is an array if returned from backend
+      if (!Array.isArray(newForm['pk_streak_rewards'])) {
+        newForm['pk_streak_rewards'] = DEFAULT_STREAK_REWARDS;
       }
       setFormData(newForm);
     }
@@ -107,6 +129,33 @@ function SettingsPage() {
     const pkgs = [...(formData['coin_packages'] || [])];
     pkgs.splice(index, 1);
     setFormData(prev => ({ ...prev, coin_packages: pkgs }));
+  };
+
+  const handleStreakRewardChange = (index: number, field: keyof StreakReward, value: any) => {
+    const rewards = [...(formData['pk_streak_rewards'] || [])];
+    if (rewards[index]) {
+      rewards[index] = { ...rewards[index], [field]: value };
+      setFormData(prev => ({ ...prev, pk_streak_rewards: rewards }));
+    }
+  };
+
+  const handleAddStreakReward = () => {
+    const rewards = [...(formData['pk_streak_rewards'] || [])];
+    const nextStreak = rewards.length > 0 ? Math.max(...rewards.map(r => Number(r.streak) || 0)) + 2 : 3;
+    rewards.push({
+      streak: nextStreak,
+      diamonds: 100,
+      xp: 200,
+      badge: null,
+      label: `Streak ${nextStreak} 🔥`,
+    });
+    setFormData(prev => ({ ...prev, pk_streak_rewards: rewards }));
+  };
+
+  const handleRemoveStreakReward = (index: number) => {
+    const rewards = [...(formData['pk_streak_rewards'] || [])];
+    rewards.splice(index, 1);
+    setFormData(prev => ({ ...prev, pk_streak_rewards: rewards }));
   };
 
   const saveMutation = useMutation({
@@ -150,6 +199,10 @@ function SettingsPage() {
         <TabsList className="mb-6 flex w-full flex-wrap sm:inline-flex sm:w-auto h-auto p-1 gap-1 bg-muted/60">
           <TabsTrigger value="general" className="flex-1 sm:flex-initial">عام</TabsTrigger>
           <TabsTrigger value="finance" className="flex-1 sm:flex-initial">المالية والعملات</TabsTrigger>
+          <TabsTrigger value="pk" className="flex-1 sm:flex-initial flex items-center gap-1.5">
+            <Swords className="size-4 text-rose-500" />
+            جولات التحدي (PK)
+          </TabsTrigger>
           <TabsTrigger value="legal" className="flex-1 sm:flex-initial">الشروط والأحكام</TabsTrigger>
         </TabsList>
         
@@ -315,6 +368,172 @@ function SettingsPage() {
             >
               {saveMutation.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
               حفظ إعدادات المالية والباقات
+            </Button>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="pk" className="space-y-6">
+          {/* Card 1: PK Core Rules */}
+          <div className="rounded-xl border bg-card p-6 shadow-sm">
+            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+              <Swords className="size-5 text-rose-500" />
+              إعدادات جولة التحدي (PK Battle Rules)
+            </h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              تحديد قواعد جولات التحدي المباشر، نسبة الجواهر الإضافية التي يحصل عليها الفائز، ونقاط الخبرة لداعمي الجولة.
+            </p>
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5">
+                  <Gem className="size-4 text-cyan-500" />
+                  نسبة بونص الفوز للمنتصر (%)
+                </Label>
+                <Input 
+                  type="number" 
+                  min="0"
+                  max="100"
+                  value={formData['pk_victory_bonus_percent']} 
+                  onChange={(e) => handleChange('pk_victory_bonus_percent', Number(e.target.value))} 
+                />
+                <p className="text-xs text-muted-foreground">
+                  نسبة مئوية تُحتسب من نقاط الجولة وتُمنح للمضيف الفائز كجواهر مجانية
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5">
+                  <Trophy className="size-4 text-amber-500" />
+                  نقاط خبرة الداعم الأول (MVP XP)
+                </Label>
+                <Input 
+                  type="number" 
+                  min="0"
+                  value={formData['pk_mvp_xp_bonus']} 
+                  onChange={(e) => handleChange('pk_mvp_xp_bonus', Number(e.target.value))} 
+                />
+                <p className="text-xs text-muted-foreground">
+                  نقاط خبرة إضافية تُمنح لأعلى داعم (MVP) في كل طرف عند انتهاء الجولة
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5">
+                  <Timer className="size-4 text-purple-500" />
+                  مدة جولة التحدي (بالثواني)
+                </Label>
+                <Input 
+                  type="number" 
+                  min="60"
+                  step="30"
+                  value={formData['pk_duration_seconds']} 
+                  onChange={(e) => handleChange('pk_duration_seconds', Number(e.target.value))} 
+                />
+                <p className="text-xs text-muted-foreground">
+                  المدة الافتراضية للجولة (600 ثانية = 10 دقائق، 300 ثانية = 5 دقائق)
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Win Streak Rewards */}
+          <div className="rounded-xl border bg-card p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Flame className="size-5 text-orange-500 shrink-0" />
+                  مكافآت سلسلة الانتصارات (Win Streak Milestones)
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  مكافآت تحفيزية تُمنح تلقائياً عند تحقيق سلسلة انتصارات متتالية في جولات التحدي PK.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleAddStreakReward} className="gap-1.5 shrink-0 self-start sm:self-auto">
+                <Plus className="size-4" />
+                إضافة مكافأة سلسلة جديدة
+              </Button>
+            </div>
+
+            <div className="space-y-3">
+              {(formData['pk_streak_rewards'] || []).map((reward: StreakReward, index: number) => (
+                <div 
+                  key={index}
+                  className="flex flex-col lg:flex-row items-start lg:items-center gap-4 p-4 rounded-lg border bg-muted/30"
+                >
+                  <div className="w-full sm:w-28 space-y-1">
+                    <Label className="text-xs">سلسلة الفوز 🔥</Label>
+                    <Input 
+                      type="number"
+                      min="2"
+                      value={reward.streak} 
+                      placeholder="مثال: 3"
+                      onChange={(e) => handleStreakRewardChange(index, 'streak', Number(e.target.value))} 
+                    />
+                  </div>
+
+                  <div className="w-full sm:w-36 space-y-1">
+                    <Label className="text-xs flex items-center gap-1">
+                      <Gem className="size-3.5 text-cyan-500" />
+                      مكافأة الماس 💎
+                    </Label>
+                    <Input 
+                      type="number"
+                      min="0"
+                      value={reward.diamonds} 
+                      placeholder="مثال: 50"
+                      onChange={(e) => handleStreakRewardChange(index, 'diamonds', Number(e.target.value))} 
+                    />
+                  </div>
+
+                  <div className="w-full sm:w-32 space-y-1">
+                    <Label className="text-xs">نقاط خبرة ⭐</Label>
+                    <Input 
+                      type="number"
+                      min="0"
+                      value={reward.xp} 
+                      placeholder="مثال: 100"
+                      onChange={(e) => handleStreakRewardChange(index, 'xp', Number(e.target.value))} 
+                    />
+                  </div>
+
+                  <div className="w-full sm:w-44 space-y-1">
+                    <Label className="text-xs">اسم الإنجاز / التسمية</Label>
+                    <Input 
+                      value={reward.label || ''} 
+                      placeholder="مثال: Hat-trick 🎩"
+                      onChange={(e) => handleStreakRewardChange(index, 'label', e.target.value)} 
+                    />
+                  </div>
+
+                  <div className="w-full sm:w-36 space-y-1">
+                    <Label className="text-xs">معرف الشارة (Badge ID)</Label>
+                    <Input 
+                      value={reward.badge || ''} 
+                      placeholder="اختياري (مثال: pk_legend)"
+                      onChange={(e) => handleStreakRewardChange(index, 'badge', e.target.value || null)} 
+                    />
+                  </div>
+
+                  <div className="lg:ms-auto pt-2 lg:pt-6 self-end lg:self-auto">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => handleRemoveStreakReward(index)}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Button 
+              className="mt-6 w-full sm:w-auto" 
+              onClick={() => saveMutation.mutate(['pk_victory_bonus_percent', 'pk_mvp_xp_bonus', 'pk_duration_seconds', 'pk_streak_rewards'])}
+              disabled={saveMutation.isPending}
+            >
+              {saveMutation.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
+              حفظ إعدادات جولات التحدي PK
             </Button>
           </div>
         </TabsContent>

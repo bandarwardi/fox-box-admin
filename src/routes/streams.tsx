@@ -42,6 +42,12 @@ type RealStream = {
   isLive: boolean
   viewerCount: number
   startedAt: string
+  pk?: {
+    status: 'idle' | 'invited' | 'active' | 'ended'
+    scores?: { hostA: number; hostB: number }
+    opponentBroadcastId?: any
+    opponentUserId?: any
+  }
 }
 
 function StreamsPage() {
@@ -115,7 +121,7 @@ function StreamsPage() {
       cell: ({ row }) => {
         const stream = row.original
         return (
-          <div className="flex items-center gap-1.5 font-bold">
+          <div className="flex items-center gap-2 font-bold">
             {stream.isLive ? (
               <span className="flex items-center gap-1.5 text-destructive animate-pulse">
                 <Radio className="size-4" /> مباشر
@@ -123,6 +129,11 @@ function StreamsPage() {
             ) : (
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <VideoOff className="size-4" /> منتهي
+              </span>
+            )}
+            {stream.isLive && stream.pk?.status === 'active' && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                ⚔️ معركة PK
               </span>
             )}
           </div>
@@ -231,7 +242,11 @@ function StreamsPage() {
           selectedStreamForWatch?.broadcaster?.username
         }
         broadcasterAvatar={selectedStreamForWatch?.broadcaster?.avatarUrl}
+        pkData={selectedStreamForWatch?.pk}
         onStreamEnded={() => {
+          queryClient.invalidateQueries({ queryKey: ["admin_streams"] });
+        }}
+        onPkEnded={() => {
           queryClient.invalidateQueries({ queryKey: ["admin_streams"] });
         }}
       />
